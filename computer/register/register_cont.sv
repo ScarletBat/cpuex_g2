@@ -17,6 +17,7 @@ module reg_cont (
 
    output wire [31:0] pc,
    output wire [31:0] pcvalid,
+
    input wire clk)
 
    wire [31:0] regsin [0:31];
