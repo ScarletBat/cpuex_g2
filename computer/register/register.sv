@@ -1,4 +1,4 @@
-`timescale 1ns / 1000ps
+`timescale 1ns / 100ps
 `default_nettype none
 
 module register(
