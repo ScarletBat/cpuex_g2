@@ -27,10 +27,10 @@ module top();
 
     inst_decoder inst_decoder(.inst(inst), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr), .opetype(opetype));
 
-reg_writer reg_writer(.r_gfflag(), .r_num(rd), .r_data(rd_data), .enable(), .regsin(regsin), .enables(regenable), .clk(clk));
+reg_writer reg_writer(.r_gfflag(), .r_num(rd), .r_data(rd_data), .enable(), .regsin(regsin), .enables(regenable));
     registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout));
-    reg_reader reg_reader1(.r_gfflag(), .r_num(rs), .r_data(rs_data), .regsout(regsout), .clk(clk));
-    reg_reader reg_reader2(.r_gfflag(), .r_num(rt), .r_data(rt_data), .regsout(regsout), .clk(clk));
+    reg_reader reg_reader1(.r_gfflag(), .r_num(rs), .r_data(rs_data), .regsout(regsout));
+    reg_reader reg_reader2(.r_gfflag(), .r_num(rt), .r_data(rt_data), .regsout(regsout));
 
     immd_extender(.immd(immd), .zors(), .eximmd(eximmd));
     data_selector data_selector1(.data0(rt_data), .data1(eximmd), .choice(), .odata(alu_data));
