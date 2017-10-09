@@ -3,14 +3,40 @@
 
 module top();
 
+    wire [31:0] inst;
+    wire [5:0] opecode;
+    wire [4:0] rd;
+    wire [4:0] rs;
+    wire [4:0] rt;
+    wire [4:0] shamt;
+    wire [5:0] funct;
+    wire [15:0] immd;
+    wire [25:0] addr;
+    wire [1:0] opetype;
+
     wire [31:0] regsin [0:31];
     wire [31:0] regsout [0:31];
     wire [31:0] regenable;
 
-    reg_writer reg_wrer(.r_gfflag(), .r_num(), .r_data(), .enable(), .regsin(regsin), .enables(regenable), .clk(clk));
+    wire [31:0] eximmd;
+    wire [31:0] rd_data;
+    wire [31:0] rs_data;
+    wire [31:0] rt_data;
+    wire [31:0] alu_data;
+    wire immflag;
+
+    inst_decoder inst_decoder(.inst(inst), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr), .opetype(opetype));
+
+reg_writer reg_writer(.r_gfflag(), .r_num(rd), .r_data(rd_data), .enable(), .regsin(regsin), .enables(regenable), .clk(clk));
     registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout));
-    reg_reader reg_rder1(.r_gfflag(), .r_num(), .r_data(), .regsout(regsout), .clk(clk));
-    reg_reader reg_rder2(.r_gfflag(), .r_num(), .r_data(), .regsout(regsout), .clk(clk));
+    reg_reader reg_reader1(.r_gfflag(), .r_num(rs), .r_data(rs_data), .regsout(regsout), .clk(clk));
+    reg_reader reg_reader2(.r_gfflag(), .r_num(rt), .r_data(rt_data), .regsout(regsout), .clk(clk));
+
+    immd_extender(.immd(immd), .zors(), .eximmd(eximmd));
+    data_selector data_selector1(.data0(rt_data), .data1(eximmd), .choice(), .odata(alu_data));
+    alu alu(.rs(rs_data), .rt(), .funct(funct), .shamt(shamt), .rd());
+
+    pc_incrementer pc_incrementer(.cpc(), .npc());
 
 endmodule
 
