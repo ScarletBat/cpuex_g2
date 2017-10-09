@@ -6,9 +6,7 @@ module reg_reader (
    input wire [3:0] r_num,
    output wire [31:0] r_data,
 
-   input wire [31:0] regsout [0:31];
-
-   input wire clk)
+   input wire [31:0] regsout [0:31]);
 
    wire [31:0] regsout [0:31];
 

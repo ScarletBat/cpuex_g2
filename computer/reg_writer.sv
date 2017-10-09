@@ -8,9 +8,7 @@ module reg_writer (
    input wire enable, // 0:disable 1:enable
 
    output wire [31:0] regsin [0:31],
-   output wire [31:0] enables,
-
-   input wire clk);
+   output wire [31:0] enables);
 
 
    wire [4:0] rnum = {r_gfflag, r_num};
