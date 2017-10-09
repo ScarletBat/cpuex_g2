@@ -1,7 +1,7 @@
 `timescale 1ns / 100ps
 `default_nettype none
 
-module imst_decoder(
+module inst_decoder(
    input wire [31:0] inst,
    output wire [5:0] opecode,
    output wire [4:0] rd,
