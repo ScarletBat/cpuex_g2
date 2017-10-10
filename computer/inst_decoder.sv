@@ -10,8 +10,7 @@ module inst_decoder(
    output wire [4:0] shamt,
    output wire [5:0] funct,
    output wire [15:0] immd,
-   output wire [25:0] addr,
-   output wire [1:0] opetype);
+   output wire [25:0] addr);
 
    assign opecode = inst[31:26];
 
@@ -24,8 +23,5 @@ module inst_decoder(
 
    assign immd = inst[15:0];
    assign addr = inst[25:0];
-
-   assign opetype = inst[31:26] == 6'b0 ? 2'b00 :
-      inst[31:26] == 6'b000010 ? 2'b10 : 2'b01;
 
 `default_nettype wire
