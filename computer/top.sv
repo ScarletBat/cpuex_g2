@@ -1,12 +1,17 @@
 `timescale 1ns / 100ps
 `default_nettype none
 
-module top();
+module top(
+   input wire clk,
+   input wire rstn,
+   input wire [31:0] inst,
+
+   input wire [31:0] program_counter;
+   );
 
     wire [31:0] cor_pc;
     wire [31:0] nxt_pc;
 
-    wire [31:0] inst;
     wire [5:0] opecode;
     wire [4:0] rd;
     wire [4:0] rs;
@@ -19,6 +24,7 @@ module top();
     wire [5:0] alu_funct;
     wire in_gof;
     wire out_gof;
+    wire zors;
 
     wire [31:0] regsin [0:31];
     wire [31:0] regsout [0:31];
@@ -29,21 +35,23 @@ module top();
     wire [31:0] rs_data;
     wire [31:0] rt_data;
     wire [31:0] alu_data;
+    wire [31:0] alu_odata;
     wire immflag;
 
     register pc(.inp(nxt_pc), .clk(clk), .enable(), .outp(cor_pc));
     register lr(.inp(cor_pc), .clk(clk), .enable(), .outp());
 
     inst_decoder inst_decoder(.inst(inst), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr));
+    controller controller(.opecode(opecode), .funct(funct), .clk(clk), .alu_funct(alu_funct), .in_gof(in_gof), .out_gof(out_gof), .zors(zors));
 
     reg_writer reg_writer(.r_gfflag(out_gof), .r_num(rd), .r_data(rd_data), .enable(), .regsin(regsin), .enables(regenable), .clk(clk));
     registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout));
-    reg_reader reg_reader1(.r_gfflag(in_gof), .r_num(rs), .r_data(rs_data), .regsout(regsout), .clk(clk));
-    reg_reader reg_reader2(.r_gfflag(in_gof), .r_num(rt), .r_data(rt_data), .regsout(regsout), .clk(clk));
+    reg_reader reg_reader1(.r_gfflag(in_gof), .r_num(rs), .r_data(rs_data), .regsout(regsout));
+    reg_reader reg_reader2(.r_gfflag(in_gof), .r_num(rt), .r_data(rt_data), .regsout(regsout));
 
-    immd_extender(.immd(immd), .zors(), .eximmd(eximmd));
+    immd_extender(.immd(immd), .zors(zors), .eximmd(eximmd));
     data_selector data_selector1(.data0(rt_data), .data1(eximmd), .choice(), .odata(alu_data));
-    alu alu(.rs(rs_data), .rt(), .funct(alu_funct), .shamt(shamt), .rd());
+    alu alu(.rs(rs_data), .rt(alu_data), .funct(alu_funct), .shamt(shamt), .rd(alu_odata));
 
     pc_incrementer pc_incrementer(.cpc(), .npc());
 

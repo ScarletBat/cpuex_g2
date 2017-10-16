@@ -2,15 +2,20 @@
 `default_nettype none
 
 module controller(
+   input wire rstn,
    input wire [5:0] opecode,
    input wire [5:0] funct,
+   input wire clk,
    
    output wire [5:0] alu_func,
    output wire in_gof,
-   output wire out_gof);
+   output wire out_gof,
+   output wire zors);
 
    assign in_gof = 1'b0;
    assign out_gof = 1'b0;
+   
+   assign zors = 1'b0;
 
    assign alu_func = inst[31:26] == 6'b0 ? funct :
       inst[31:26] == 6'b001000 ? 6'b100000 :
@@ -22,5 +27,21 @@ module controller(
 
    assign opetype = inst[31:26] == 6'b0 ? 2'b00 :
       inst[31:26] == 6'b000010 ? 2'b10 : 2'b01;
+
+   logic [1:0] status;
+
+
+
+   always @(posedge clk) begin
+      if(~retn) begin
+         status <= 0;
+      end else if (status == 0) begin
+         status <= 1;
+      end else begin
+         status <= 0
+      end
+   end
+
+endmodule
 
 `default_nettype wire
