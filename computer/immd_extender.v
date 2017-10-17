@@ -4,9 +4,9 @@
 module immd_extender(
     input wire [15:0] immd,
     input wire zors,
-    output wire eximmd);
+    output wire [31:0] eximmd);
 
-    assign eximmd = zors == 1'b0 ? {16'b0, immd} : {16(immd[15]), immd};
+    assign eximmd = zors == 1'b0 ? {16'b0, immd} : { {16{immd[15]}}, immd};
 
 endmodule 
 

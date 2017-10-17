@@ -26,7 +26,7 @@ module alu(
       funct == funct_nor ? ~(rs | rt) :
       funct == funct_sll ? rs << shamt :
       funct == funct_srl ? rs >> shamt :
-      funct == funct_sra ? {shamt(rs[31]), rs >> shamt} : '0
+      funct == funct_sra ? {{{32{rs[31]}}, rs} >> shamt}[31:0] : 32'b0;
 
 endmodule
 `default_nettype wire

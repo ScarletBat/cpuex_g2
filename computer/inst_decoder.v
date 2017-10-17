@@ -23,5 +23,7 @@ module inst_decoder(
 
    assign immd = inst[15:0];
    assign addr = inst[25:0];
+   
+endmodule
 
 `default_nettype wire

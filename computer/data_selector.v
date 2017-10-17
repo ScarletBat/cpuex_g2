@@ -8,7 +8,6 @@ module data_selector(
     output wire [31:0] odata);
 
     assign odata = choice == 1'b0 ? data0 : data1;
-
 endmodule
 
 `default_nettype wire
