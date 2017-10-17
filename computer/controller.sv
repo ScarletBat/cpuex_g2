@@ -10,7 +10,11 @@ module controller(
    output wire [5:0] alu_func,
    output wire in_gof,
    output wire out_gof,
-   output wire zors);
+   output wire zors,
+   
+   output wire write_reg,
+   output wire write_pc,
+   output wire write_lr);
 
    assign in_gof = 1'b0;
    assign out_gof = 1'b0;
