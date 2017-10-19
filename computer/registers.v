@@ -14,8 +14,8 @@ module registers (
    // r1 - r31 : general registers
    // f0 - f31 (r32 - r63) : float registers
    genvar i;
-   for (i=`WIDTH; i<`NUM*`WIDTH; i=i+`WIDTH) begin
-      register i_r (.inp(inreg[i+`WIDTH-1:i]), .clk(clk), .enable(enable[i]), .outp(outreg[i+`WIDTH-1:i]), .rstn(rstn));
+   for (i=1; i<`NUM; i=i+1) begin
+      register i_r (.inp(inreg[i*`WIDTH+`WIDTH-1:i*`WIDTH]), .clk(clk), .enable(enable[i]), .outp(outreg[i*`WIDTH+`WIDTH-1:i*`WIDTH]), .rstn(rstn));
    end
 endmodule
 

@@ -3,7 +3,7 @@
 module top(
    input wire clk,
    input wire rstn,
-   input wire [`WIDTH-1:0] inst,
+   input wire [`WIDTH-1:0] instr,
 
    output wire [`WIDTH-1:0] program_counter,
    output wire [`WIDTH-1:0] link_register,
@@ -57,7 +57,7 @@ module top(
     register pc(.inp(nxt_pc), .clk(clk), .enable(write_pc), .outp(cor_pc), .rstn(rstn));
     register lr(.inp(cor_pc), .clk(clk), .enable(write_lr), .outp(lr_data), .rstn(rstn));
 
-    inst_decoder inst_decoder(.inst(inst), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr));
+    inst_decoder inst_decoder(.instrm(instr), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr));
     controller controller(.rstn(rstn), .opecode(opecode), .funct(funct), .clk(clk), .alu_func(alu_funct), .in_gof(in_gof), .out_gof(out_gof), .zors(zors), .reorim(reorim),  .write_reg(write_reg), .write_pc(write_pc), .write_lr(write_lr), .cp_type(cp_type), .jrorrt(jrorrt), .enbranch(enbranch), .zflag(zflag));
 
     reg_writer reg_writer(.r_gfflag(out_gof), .r_num(rd), .r_data(rd_data), .enable(write_reg), .regsin(regsin), .enables(regenable));
@@ -66,7 +66,7 @@ module top(
     reg_reader reg_reader2(.r_gfflag(in_gof), .r_num(rt), .r_data(rt_data), .regsout(regsout), .clk(clk));
     reg_reader reg_reader3(.r_gfflag(regnum[5]), .r_num(regnum[4:0]), .r_data(reggg), .regsout(regsout), .clk(clk));
 
-    immd_extender(.immd(immd), .zors(zors), .eximmd(eximmd));
+    immd_extender immd_extender(.immd(immd), .zors(zors), .eximmd(eximmd));
     data_selector data_selector1(.data0(rt_data), .data1(eximmd), .choice(reorim), .odata(alu_data));
     alu alu(.rs(rs_data), .rt(alu_data), .funct(alu_funct), .shamt(shamt), .rd(alu_odata), .zflag(zflag));
 

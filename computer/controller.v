@@ -22,11 +22,21 @@ module controller(
    output wire enbranch,
    input wire zflag);
 
+   reg [1:0] status = 2'b00;
+
+   reg write_reg_r = 1'b0;
+   reg write_pc_r = 1'b0;
+   reg write_lr_r = 1'b0;
+
    assign in_gof = 1'b0;
    assign out_gof = 1'b0;
    
    assign zors = 1'b0;
    assign enbranch = zflag^opecode[0];
+
+   assign write_reg = write_reg_r;
+   assign write_pc = write_pc_r;
+   assign write_lr = write_lr_r;
 
    assign reorim = (opecode == 6'b001000) || (opecode == 6'b001100) || (opecode == 6'b001101) || (opecode == 6'b001010) || (opecode == 6'b000100) || (opecode == 6'b000101);
 
@@ -45,21 +55,15 @@ module controller(
       opecode == 6'b000100 ? 2'b11 :
       opecode == 6'b000101 ? 2'b11 : 2'b00;
 
-   reg [1:0] status = 0;
-
-   reg write_reg_r = 1'b0;
-   reg write_pc_r = 1'b0;
-   reg write_lr_r = 1'b0;
-
    always @(posedge clk) begin
       if(~rstn) begin
-         status <= 0;
-      end else if (status == 0) begin
+         status <= 2'b00;
+      end else if (status == 2'b00) begin
          write_pc_r <= 1'b1;
-         status <= 1;
+         status <= 2'b01;
       end else begin
          write_pc_r <= 1'b0;
-         status <= 0;
+         status <= 2'b00;
       end
    end
 

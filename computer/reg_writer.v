@@ -7,12 +7,15 @@ module reg_writer (
    input wire enable, // 0:disable 1:enable
 
    output wire [`WIDTH*`NUM-1:0] regsin,
-   output wire [`NUM:0] enables);
+   output wire [`NUM-1:0] enables);
 
 
    wire [5:0] rnum = {r_gfflag, r_num};
+   
+   wire [`NUM: 0] a = {`NUM'b0, 1'b1};
+   wire [`NUM:0] b = a << rnum;
 
-   assign enables = {{`NUM'b0, 1'b1} << rnum}[`NUM-1:0];
+   assign enables = b[`NUM-1:0];
 
    genvar i;
    for (i=0; i<`WIDTH*`NUM; i=i+`WIDTH) begin

@@ -18,6 +18,8 @@ module alu(
    localparam funct_sll = 6'b000000; 
    localparam funct_srl = 6'b000010; 
    localparam funct_sra = 6'b000011;
+   
+   wire [32:0] a = {{32{rs[31]}}, rs} >> shamt;
 
    assign rd = funct == funct_add ? rs + rt :
       funct == funct_sub ? rs - rt :
@@ -27,7 +29,7 @@ module alu(
       funct == funct_nor ? ~(rs | rt) :
       funct == funct_sll ? rs << shamt :
       funct == funct_srl ? rs >> shamt :
-      funct == funct_sra ? {{{32{rs[31]}}, rs} >> shamt}[31:0] : 32'b0;
+      funct == funct_sra ? a[31:0] : 32'b0;
 
    assign zflag = rd == 31'b0 ? 1'b1 : 1'b0;
 
