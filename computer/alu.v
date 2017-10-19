@@ -6,7 +6,8 @@ module alu(
    input wire [31:0] rt,
    input wire [5:0] funct,
    input wire [4:0] shamt,
-   output wire [31:0] rd);
+   output wire [31:0] rd,
+   output wire zflag);
 
    localparam funct_add = 6'b100000;
    localparam funct_sub = 6'b100010;
@@ -27,6 +28,8 @@ module alu(
       funct == funct_sll ? rs << shamt :
       funct == funct_srl ? rs >> shamt :
       funct == funct_sra ? {{{32{rs[31]}}, rs} >> shamt}[31:0] : 32'b0;
+
+   assign zflag = rs == rt ? 1'b1 : 1'b0;
 
 endmodule
 `default_nettype wire

@@ -6,6 +6,7 @@ module top(
    input wire [`WIDTH-1:0] inst,
 
    output wire [`WIDTH-1:0] program_counter,
+   output wire [`WIDTH-1:0] link_register,
 
    input wire [5:0] regnum,
    output wire [`WIDTH-1:0] reggg
@@ -49,6 +50,7 @@ module top(
     wire immflag;
 
     assign program_counter = cor_pc;
+    assign link_register = lr_data;
 
     register pc(.inp(nxt_pc), .clk(clk), .enable(write_pc), .outp(cor_pc));
     register lr(.inp(cor_pc), .clk(clk), .enable(write_lr), .outp(lr_data));
@@ -60,7 +62,7 @@ module top(
     registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout));
     reg_reader reg_reader1(.r_gfflag(in_gof), .r_num(rs), .r_data(rs_data), .regsout(regsout), .clk(clk));
     reg_reader reg_reader2(.r_gfflag(in_gof), .r_num(rt), .r_data(rt_data), .regsout(regsout), .clk(clk));
-//    reg_reader reg_reader3(.r_gfflag(regnum[5]), .r_num(regnum[4:0]), .r_data(reggg), .regsout(regsout), .clk(clk));
+    reg_reader reg_reader3(.r_gfflag(regnum[5]), .r_num(regnum[4:0]), .r_data(reggg), .regsout(regsout), .clk(clk));
 
     immd_extender(.immd(immd), .zors(zors), .eximmd(eximmd));
     data_selector data_selector1(.data0(rt_data), .data1(eximmd), .choice(reorim), .odata(alu_data));
