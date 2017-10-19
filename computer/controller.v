@@ -18,12 +18,15 @@ module controller(
    output wire write_lr,
 
    output wire [1:0] cp_type,
-   output wire jrorrt);
+   output wire jrorrt,
+   output wire enbranch,
+   input wire zflag);
 
    assign in_gof = 1'b0;
    assign out_gof = 1'b0;
    
    assign zors = 1'b0;
+   assign enbranch = zflag^opecode[0];
 
    assign reorim = (opecode == 6'b001000) || (opecode == 6'b001100) || (opecode == 6'b001101) || (opecode == 6'b001010) || (opecode == 6'b000100) || (opecode == 6'b000101);
 

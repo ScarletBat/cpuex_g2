@@ -36,6 +36,8 @@ module top(
     wire write_reg;
     wire [1:0] cp_type;
     wire jrorrt;
+    wire enbranch;
+    wire zflag;
 
     wire [`WIDTH*`NUM-1:0] regsin;
     wire [`WIDTH*`NUM-1:0] regsout;
@@ -56,7 +58,7 @@ module top(
     register lr(.inp(cor_pc), .clk(clk), .enable(write_lr), .outp(lr_data));
 
     inst_decoder inst_decoder(.inst(inst), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr));
-    controller controller(.rstn(rstn), .opecode(opecode), .funct(funct), .clk(clk), .alu_func(alu_funct), .in_gof(in_gof), .out_gof(out_gof), .zors(zors), .reorim(reorim),  .write_reg(write_reg), .write_pc(write_pc), .write_lr(write_lr), .cp_type(cp_type), .jrorrt(jrorrt));
+    controller controller(.rstn(rstn), .opecode(opecode), .funct(funct), .clk(clk), .alu_func(alu_funct), .in_gof(in_gof), .out_gof(out_gof), .zors(zors), .reorim(reorim),  .write_reg(write_reg), .write_pc(write_pc), .write_lr(write_lr), .cp_type(cp_type), .jrorrt(jrorrt), .enbranch(enbranch), .zflag(zflag));
 
     reg_writer reg_writer(.r_gfflag(out_gof), .r_num(rd), .r_data(rd_data), .enable(write_reg), .regsin(regsin), .enables(regenable));
     registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout));
@@ -66,10 +68,10 @@ module top(
 
     immd_extender(.immd(immd), .zors(zors), .eximmd(eximmd));
     data_selector data_selector1(.data0(rt_data), .data1(eximmd), .choice(reorim), .odata(alu_data));
-    alu alu(.rs(rs_data), .rt(alu_data), .funct(alu_funct), .shamt(shamt), .rd(alu_odata));
+    alu alu(.rs(rs_data), .rt(alu_data), .funct(alu_funct), .shamt(shamt), .rd(alu_odata), .zflag(zflag));
 
     data_selector data_selector2(.data0(rs_data), .data1(lr_data), .choice(jrorrt), .odata(regpc));
-    pc_incrementer pc_incrementer(.cpc(cor_pc), .regs(regpc), .immd(immd), .addr(addr), .cp_type(cp_type), .npc(nxt_pc));
+    pc_incrementer pc_incrementer(.cpc(cor_pc), .regs(regpc), .immd(immd), .addr(addr), .enbranch(enbranch), .cp_type(cp_type), .npc(nxt_pc));
 
 endmodule
 
