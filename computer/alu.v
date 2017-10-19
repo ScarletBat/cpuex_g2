@@ -29,7 +29,7 @@ module alu(
       funct == funct_srl ? rs >> shamt :
       funct == funct_sra ? {{{32{rs[31]}}, rs} >> shamt}[31:0] : 32'b0;
 
-   assign zflag = rs == rt ? 1'b1 : 1'b0;
+   assign zflag = rd == 31'b0 ? 1'b1 : 1'b0;
 
 endmodule
 `default_nettype wire
