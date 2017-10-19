@@ -12,7 +12,7 @@ module register (
 
    always @(posedge clk) begin
       if (~rstn) begin
-         data <= (`WIDTH-1)'b0;
+         data <= `WIDTH'b0;
       end else if (enable) begin
          data <= inp;
       end
