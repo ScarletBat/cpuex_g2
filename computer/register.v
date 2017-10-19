@@ -4,13 +4,16 @@ module register (
    input wire [`WIDTH-1:0] inp,
    input wire clk,
    input wire enable,
+   input wire rstn,
    output wire [`WIDTH-1:0] outp);
 
    reg [`WIDTH-1:0] data = `WIDTH'b0;
    assign outp = data;
 
    always @(posedge clk) begin
-      if (enable) begin
+      if (~rstn) begin
+         data <= (`WIDTH-1)'b0;
+      end else if (enable) begin
          data <= inp;
       end
    end

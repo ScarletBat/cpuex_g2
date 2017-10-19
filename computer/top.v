@@ -54,14 +54,14 @@ module top(
     assign program_counter = cor_pc;
     assign link_register = lr_data;
 
-    register pc(.inp(nxt_pc), .clk(clk), .enable(write_pc), .outp(cor_pc));
-    register lr(.inp(cor_pc), .clk(clk), .enable(write_lr), .outp(lr_data));
+    register pc(.inp(nxt_pc), .clk(clk), .enable(write_pc), .outp(cor_pc), .rstn(rstn));
+    register lr(.inp(cor_pc), .clk(clk), .enable(write_lr), .outp(lr_data), .rstn(rstn));
 
     inst_decoder inst_decoder(.inst(inst), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr));
     controller controller(.rstn(rstn), .opecode(opecode), .funct(funct), .clk(clk), .alu_func(alu_funct), .in_gof(in_gof), .out_gof(out_gof), .zors(zors), .reorim(reorim),  .write_reg(write_reg), .write_pc(write_pc), .write_lr(write_lr), .cp_type(cp_type), .jrorrt(jrorrt), .enbranch(enbranch), .zflag(zflag));
 
     reg_writer reg_writer(.r_gfflag(out_gof), .r_num(rd), .r_data(rd_data), .enable(write_reg), .regsin(regsin), .enables(regenable));
-    registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout));
+    registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout), .rstn(rstn));
     reg_reader reg_reader1(.r_gfflag(in_gof), .r_num(rs), .r_data(rs_data), .regsout(regsout), .clk(clk));
     reg_reader reg_reader2(.r_gfflag(in_gof), .r_num(rt), .r_data(rt_data), .regsout(regsout), .clk(clk));
     reg_reader reg_reader3(.r_gfflag(regnum[5]), .r_num(regnum[4:0]), .r_data(reggg), .regsout(regsout), .clk(clk));
