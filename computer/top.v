@@ -8,6 +8,11 @@ module top(
    output wire [`WIDTH-1:0] program_counter,
    output wire [`WIDTH-1:0] link_register,
 
+   output wire [`WIDTH-1:0] mem_addr,
+   input wire [`WIDTH-1:0] mem_rdata,
+   output wire [`WIDTH-1:0] mem_wdata,
+   output wire mem_we,
+
    input wire [5:0] regnum,
    output wire [`WIDTH-1:0] reggg
    );
@@ -60,6 +65,7 @@ module top(
     inst_decoder inst_decoder(.instrm(instr), .opecode(opecode), .rd(rd), .rs(rs), .rt(rt), .shamt(shamt), .funct(funct), .immd(immd), .addr(addr));
     controller controller(.rstn(rstn), .opecode(opecode), .funct(funct), .clk(clk), .alu_func(alu_funct), .in_gof(in_gof), .out_gof(out_gof), .zors(zors), .reorim(reorim),  .write_reg(write_reg), .write_pc(write_pc), .write_lr(write_lr), .cp_type(cp_type), .jrorrt(jrorrt), .enbranch(enbranch), .zflag(zflag));
 
+    data_selector data_selector3(.data0(alu_odata), .data1(eximmd), .choice(1'b0), .odata(rd_data));
     reg_writer reg_writer(.r_gfflag(out_gof), .r_num(rd), .r_data(rd_data), .enable(write_reg), .regsin(regsin), .enables(regenable));
     registers regs(.inreg(regsin), .enable(regenable), .clk(clk), .outreg(regsout), .rstn(rstn));
     reg_reader reg_reader1(.r_gfflag(in_gof), .r_num(rs), .r_data(rs_data), .regsout(regsout), .clk(clk));

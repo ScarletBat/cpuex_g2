@@ -16,7 +16,7 @@ module inst_decoder(
 
    assign rd = instrm[25:21];
    assign rs = instrm[20:16];
-   assign rt = instrm[15:11];
+   assign rt = ((instrm[31:26] == 6'b000100) || (instrm[31:26] == 6'b000101)) ? instrm[25:21] : instrm[15:11];
 
    assign shamt = instrm[10:6];
    assign funct = instrm[5:0];
