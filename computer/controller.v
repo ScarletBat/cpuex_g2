@@ -20,7 +20,11 @@ module controller(
    output wire [1:0] cp_type,
    output wire jrorrt,
    output wire enbranch,
-   input wire zflag);
+   input wire zflag,
+   output wire mem_we,
+   output wire loadornot,
+   output wire lsorlui,
+   output wire memornot);
 
    (* mark_debug = "true" *) reg [1:0] status = 2'b00;
    reg valid = 1'b0;
@@ -28,6 +32,7 @@ module controller(
    reg write_reg_r = 1'b0;
    reg write_pc_r = 1'b0;
    reg write_lr_r = 1'b0;
+   reg mem_we_r = 1'b0;
 
    assign in_gof = 1'b0;
    assign out_gof = 1'b0;
@@ -39,8 +44,11 @@ module controller(
    assign write_reg = write_reg_r;
    assign write_pc = write_pc_r;
    assign write_lr = write_lr_r;
+   assign mem_we = mem_we_r;
 
    assign reorim = (opecode == 6'b001000) || (opecode == 6'b001100) || (opecode == 6'b001101) || (opecode == 6'b001010);
+   assign loadornot = opecode == 6'b100011 ? 1'b1 : 1'b0;
+   assign lsorlui = opecode == 6'b001111 ? 1'b1 : 1'b0;
 
    assign alu_func = opecode == 6'b0 ? funct :
       opecode == 6'b001000 ? 6'b100000 :
@@ -75,20 +83,27 @@ module controller(
             if (status == 2'b00) begin
                write_pc_r <= 1'b0;
                write_reg_r <= 1'b0;
+               mem_we_r <= 1'b0;
                status <= 2'b01;
             end else if (status == 2'b01) begin
                status <= 2'b10;
             end else if (status == 2'b10) begin
                write_pc_r <= 1'b0;
                if ((opecode == 6'b000100) || (opecode == 6'b000101)) begin
+                  mem_we_r <= 1'b0;
+                  write_reg_r <= 1'b0;
+               end else if ((opecode == 6'b101011) || (opecode == 6'b001111)) begin 
+                  mem_we_r <= 1'b1;
                   write_reg_r <= 1'b0;
                end else begin
+                  mem_we_r <= 1'b0;
                   write_reg_r <= 1'b1;
                end
                status <= 2'b11;
             end else begin
                write_pc_r <= 1'b1;
                write_reg_r <= 1'b0;
+               mem_we_r <= 1'b0;
                status <= 2'b00;
             end
          end
